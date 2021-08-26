@@ -1,0 +1,40 @@
+var elasticsearch = require('elasticsearch');
+var client = new elasticsearch.Client({
+  host: 'localhost:9200',
+  log: 'trace',
+  apiVersion: '7.2', // use the same version of your Elasticsearch instance
+});
+
+
+
+  async function searchData() {
+    try {
+        const response = await client.search({
+          q: 'pants'
+        });
+        console.log(response.hits.hits)
+      } catch (error) {
+        console.trace(error.message)
+      }
+  }
+
+  async function findTweets() {
+    const response = await client.search({
+        index: 'shops',
+        type: 'doc',
+        body: {
+          query: {
+            match: {
+              body: 'elasticsearch'
+            }
+          }
+        }
+      })
+       
+      for (const tweet of response.hits.hits) {
+        console.log('tweet:', tweet);
+      }
+  }
+ 
+  searchData();
+  findTweets();
